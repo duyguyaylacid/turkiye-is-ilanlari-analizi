@@ -1,0 +1,12 @@
+İlan kategorisi tahmin modeli doğruluk oranı: %60.00
+
+                     precision    recall  f1-score   support
+
+       BI_Raporlama       0.67      0.80      0.73         5
+      Veri Analisti       0.00      0.00      0.00         5
+Yazılım Geliştirici       0.80      0.80      0.80         5
+        İş Analisti       0.57      0.80      0.67         5
+
+           accuracy                           0.60        20
+          macro avg       0.51      0.60      0.55        20
+       weighted avg       0.51      0.60      0.55        20
