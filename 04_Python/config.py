@@ -1,1 +1,6 @@
-APIFY_TOKEN = "apify_api_ts327xhTWfFbHB6YiPozWcbTDSQEmD3RkjkJ"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+APIFY_TOKEN = os.getenv("APIFY_TOKEN")
