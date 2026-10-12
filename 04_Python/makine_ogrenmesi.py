@@ -5,19 +5,20 @@ import seaborn as sns
 
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 # 1) Veriyi oku
 PROJE_KLASORU = Path(__file__).resolve().parent.parent
 VERI_DOSYASI = PROJE_KLASORU / "02_Temiz_Veriler" / "is_ilanlari_temiz.xlsx"
 
 df = pd.read_excel(VERI_DOSYASI)
+df["Teknik Beceriler"] = df["Teknik Beceriler"].fillna("")
 
-# 2) Tahmin hedefi: ilanın yeni mezuna uygunluğu
+# 2) Tahmin hedefi: İlan kategorisi
 hedef = "Kategori"
 
 # Modelde kullanılacak alanlar
@@ -33,7 +34,9 @@ sayisal_sutunlar = [
     "Teknik Beceri Sayısı",
 ]
 
-X = df[kategorik_sutunlar + sayisal_sutunlar]
+metin_sutun = "Teknik Beceriler"
+
+X = df[kategorik_sutunlar + sayisal_sutunlar + [metin_sutun]]
 y = df[hedef].str.strip()
 
 print("\n--- HEDEF DEĞİŞKEN DAĞILIMI ---")
@@ -48,11 +51,12 @@ X_egitim, X_test, y_egitim, y_test = train_test_split(
     stratify=y
 )
 
-# 4) Kategorik alanları sayısallaştır
+# 4) Kategorik alanları sayısallaştır ve becerileri vektörleştir
 on_isleme = ColumnTransformer(
     transformers=[
         ("kategori", OneHotEncoder(handle_unknown="ignore"), kategorik_sutunlar),
         ("sayisal", StandardScaler(), sayisal_sutunlar),
+        ("beceriler", CountVectorizer(binary=True, token_pattern=r"(?u)\b[\w#+.]+\b"), metin_sutun),
     ]
 )
 
